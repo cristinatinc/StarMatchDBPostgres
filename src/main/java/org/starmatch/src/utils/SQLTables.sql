@@ -22,16 +22,6 @@ CREATE TABLE "Admin" (
                        password TEXT NOT NULL
 );
 
--- Table for Compatibility
-CREATE TABLE "Compatibility" (
-                            compatibilityScore BIGINT NOT NULL,
-                            friendId INTEGER NOT NULL,
-                            userId INTEGER NOT NULL,
-                            PRIMARY KEY (userId, friendId),
-                            FOREIGN KEY (userId) REFERENCES "User" (id) ON DELETE CASCADE,
-                            FOREIGN KEY (friendId) REFERENCES "User" (id) ON DELETE CASCADE
-);
-
 -- Table for User_Friends (for managing friends as a many-to-many relationship)
 CREATE TABLE "User_Friends" (
                               userId INTEGER NOT NULL,
