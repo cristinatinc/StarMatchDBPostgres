@@ -2,6 +2,7 @@ package org.starmatch.src;
 
 import org.starmatch.src.StarMatchController;
 import org.starmatch.src.model.*;
+import org.starmatch.src.exceptions.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -67,7 +68,7 @@ public class ConsoleApp {
             System.out.println("Login successful! Welcome, " + email);
             userMenu(scanner, email);
         } else {
-            System.out.println("Invalid credentials. Please try again.");
+            throw new ValidationException("Invalid credentials. Please try again.");
         }
     }
 
@@ -86,7 +87,7 @@ public class ConsoleApp {
             System.out.println("Login successful! Welcome, " + email);
             adminMenu(scanner);
         } else {
-            System.out.println("Invalid credentials. Please try again.");
+            throw new ValidationException("Invalid credentials. Please try again.");
         }
     }
 
@@ -110,9 +111,9 @@ public class ConsoleApp {
         String placeOfBirth = scanner.nextLine();
 
         try{
-        starMatchController.signUpNewUser(name, LocalDate.parse(dateOfBirth), LocalTime.parse(timeOfBirth), placeOfBirth, email, password);
-        System.out.println("Sign-up successful! Welcome, " + name);}
-        catch (NoSuchElementException e) {
+            starMatchController.signUpNewUser(name, LocalDate.parse(dateOfBirth), LocalTime.parse(timeOfBirth), placeOfBirth, email, password);
+            System.out.println("Sign-up successful! Welcome, " + name);}
+        catch (EntityNotFoundException e) {
             System.out.println(e.getMessage());
         }
         userMenu(scanner, email);
@@ -230,8 +231,11 @@ public class ConsoleApp {
         starMatchController.viewUsers();
         System.out.print("User ID: ");
         String userID = scanner.nextLine();
-
-        starMatchController.removeUser(Integer.valueOf(userID));
+        try{
+            starMatchController.removeUser(Integer.valueOf(userID));}
+        catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -288,8 +292,11 @@ public class ConsoleApp {
         String newQuote = scanner.nextLine();
         System.out.print("Enter the element represented by the quote: ");
         String element = scanner.nextLine();
-
-        starMatchController.addNewQuote(newQuote, element);
+        try{
+            starMatchController.addNewQuote(newQuote, element);}
+        catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -301,8 +308,11 @@ public class ConsoleApp {
         starMatchController.viewQuotes();
         System.out.print("Quote ID: ");
         String quoteID = scanner.nextLine();
-
-        starMatchController.removeQuote(Integer.valueOf(quoteID));
+        try{
+            starMatchController.removeQuote(Integer.valueOf(quoteID));}
+        catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -385,7 +395,7 @@ public class ConsoleApp {
         try{
             starMatchController.addNewAdmin(name, email, password);
             System.out.println("Admin added.");}
-        catch (NoSuchElementException e){
+        catch (ValidationException e){
             System.out.println(e.getMessage());
         }
     }
@@ -425,7 +435,7 @@ public class ConsoleApp {
             starMatchController.updateAdmin(adminId, name, email, password);
             System.out.println("Admin updated.");
         }
-        catch (NoSuchElementException e){
+        catch (ValidationException e){
             System.out.println(e.getMessage());
         }
 
@@ -474,8 +484,8 @@ public class ConsoleApp {
         Element element;
         try {
             element = Element.valueOf(traitElement);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Invalid element specified. Trait not created.");
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
             return;
         }
         starMatchController.addTrait(traitName,element);
@@ -490,7 +500,11 @@ public class ConsoleApp {
         starMatchController.viewTraits();
         System.out.print("Trait ID to remove: ");
         String traitID = scanner.nextLine();
-        starMatchController.removeTrait(Integer.valueOf(traitID));
+        try{
+            starMatchController.removeTrait(Integer.valueOf(traitID));}
+        catch (EntityNotFoundException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -510,7 +524,7 @@ public class ConsoleApp {
         if (!traitElement.isBlank()) {
             try {
                 element = Element.valueOf(traitElement);
-            } catch (IllegalArgumentException e) {
+            } catch (BusinessLogicException e) {
                 System.out.println("Invalid element specified. Trait not updated.");
                 return;
             }
@@ -525,26 +539,26 @@ public class ConsoleApp {
     private void viewUserProfile(String userEmail) {
         User user=starMatchController.viewUserProfile(userEmail);
         if(user == null){
-            System.out.println("Error: No user found with this email");
+            throw new EntityNotFoundException("Error: No user found with this email");
         }
         else{
-        System.out.println("""
+            System.out.println("""
                 User Profile:
                 Name:""" + user.getName() + """
                 
                 Birthdate:""" + user.getBirthDate() +
-                """
-                
-                Birthtime:""" + user.getBirthTime() +
-                """
-                
-                City of birth:""" + user.getBirthPlace() +
-                """
-                
-                Email:""" + user.getEmail() +
-                """
-                
-                Password:""" + user.getPassword());}
+                    """
+                    
+                    Birthtime:""" + user.getBirthTime() +
+                    """
+                    
+                    City of birth:""" + user.getBirthPlace() +
+                    """
+                    
+                    Email:""" + user.getEmail() +
+                    """
+                    
+                    Password:""" + user.getPassword());}
     }
 
     /**
@@ -580,7 +594,7 @@ public class ConsoleApp {
             starMatchController.updateUser(user,name,email,password,birthDate,birthTime,birthPlace);
             System.out.println("User updated");
         }
-        catch (NoSuchElementException e){
+        catch (EntityNotFoundException e){
             System.out.println(e.getMessage());
         }
     }
@@ -590,15 +604,20 @@ public class ConsoleApp {
      * @param userEmail The email of the currently logged-in user.
      */
     private void viewNatalChart(String userEmail) {
-        NatalChart natalChart = starMatchController.viewNatalChart(userEmail);
-        if (natalChart != null) {
-            System.out.println("Natal Chart:");
-            natalChart.getPlanets().forEach(planet ->
-                    System.out.println(planet.getPlanetName() + ": " + planet.getSign().getStarName())
-            );
-        } else {
-            System.out.println("No natal chart available for this user.");
+        try{
+            NatalChart natalChart = starMatchController.viewNatalChart(userEmail);
+            if (natalChart != null) {
+                System.out.println("Natal Chart:");
+                natalChart.getPlanets().forEach(planet ->
+                        System.out.println(planet.getPlanetName() + ": " + planet.getSign().getStarName())
+                );
+            } else {
+                throw new BusinessLogicException("No natal chart available for this user.");
+            }}
+        catch (EntityNotFoundException e){
+            System.out.println(e.getMessage());
         }
+
     }
 
     /**
@@ -678,13 +697,10 @@ public class ConsoleApp {
         System.out.println("Enter the email of the user you want to add as friend:");
         String friendEmail = scanner.nextLine();
         try{
-        starMatchController.addFriend(userEmail,friendEmail);
-        System.out.println("Friend added!");}
-        catch (IllegalArgumentException f){
+            starMatchController.addFriend(userEmail,friendEmail);
+            System.out.println("Friend added!");}
+        catch (BusinessLogicException | EntityNotFoundException f){
             System.out.println(f.getMessage());
-        }
-        catch (NoSuchElementException e){
-            System.out.println(e.getMessage());
         }
     }
 
@@ -696,7 +712,7 @@ public class ConsoleApp {
         System.out.println("Your friends:");
         List<User> friends = starMatchController.viewFriends(userEmail);
         if(friends.isEmpty())
-            System.out.println("No friends found.");
+            throw new EntityNotFoundException("No friends found.");
         else
             friends.forEach(friend -> System.out.println(friend.getName() + " (" + friend.getEmail() + ")"));
     }
@@ -711,9 +727,9 @@ public class ConsoleApp {
         System.out.println("Enter the email of the user you want to remove as friend:");
         String friendEmail = scanner.nextLine();
         try{
-        starMatchController.removeFriend(userEmail,friendEmail);
-        System.out.println("Friend removed!");}
-        catch (NoSuchElementException e){
+            starMatchController.removeFriend(userEmail,friendEmail);
+            System.out.println("Friend removed!");}
+        catch (EntityNotFoundException e){
             System.out.println(e.getMessage());
         }
     }
@@ -729,9 +745,9 @@ public class ConsoleApp {
         String friendEmail = scanner.nextLine();
         System.out.println("Your compatibility is:");
         try{
-        Compatibility compatibility = starMatchController.getCompatibility(userEmail,friendEmail);
-        System.out.println(compatibility.getCompatibilityScore() + "% compatible");}
-        catch (NoSuchElementException e){
+            Compatibility compatibility = starMatchController.getCompatibility(userEmail,friendEmail);
+            System.out.println(compatibility.getCompatibilityScore() + "% compatible");}
+        catch (EntityNotFoundException e){
             System.out.println(e.getMessage());
         }
     }
