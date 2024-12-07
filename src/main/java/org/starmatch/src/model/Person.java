@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,7 +8,7 @@ import java.time.LocalTime;
  * This is an abstract class and can be extended to represent specific types of people in various contexts.
  * Implements the {@link HasId} interface to provide an ID getter.
  */
-public abstract class Person implements HasId{
+public abstract class Person implements org.starmatch.src.model.HasId {
     protected int id;
     protected String name;
     protected LocalDate birthDate;

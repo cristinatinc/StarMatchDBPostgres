@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents the four classical elements: Fire, Water, Air, and Earth.

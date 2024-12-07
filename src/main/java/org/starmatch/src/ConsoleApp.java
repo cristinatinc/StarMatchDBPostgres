@@ -1,7 +1,7 @@
-import model.*;
-import repository.InFileRepository;
-import repository.InMemoryRepository;
-import repository.Repository;
+package org.starmatch.src;
+
+import org.starmatch.src.StarMatchController;
+import org.starmatch.src.model.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

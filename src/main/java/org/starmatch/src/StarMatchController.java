@@ -1,4 +1,7 @@
-import model.*;
+package org.starmatch.src;
+
+import org.starmatch.src.StarMatchService;
+import org.starmatch.src.model.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

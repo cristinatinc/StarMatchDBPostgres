@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/starmatch/starmatch.iml" filepath="$PROJECT_DIR$/starmatch/starmatch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/src/StarMatch.iml" filepath="$PROJECT_DIR$/src/StarMatch.iml" />
     </modules>
   </component>
 </project>

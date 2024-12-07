@@ -1,10 +1,10 @@
-package repository;
+package org.starmatch.src.repository;
 
 import java.io.*;
 import java.util.*;
 import java.util.function.Consumer;
 
-import model.*;
+import org.starmatch.src.model.*;
 
 public class InFileRepository<T extends HasId> implements Repository<T> {
     private final String filePath;

@@ -1,10 +1,10 @@
-package repository;
+package org.starmatch.src.repository;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import model.HasId;
+import org.starmatch.src.model.HasId;
 
 /**
  * A repository implementation that stores data in memory.

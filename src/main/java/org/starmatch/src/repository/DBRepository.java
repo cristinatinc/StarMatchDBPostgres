@@ -1,11 +1,11 @@
-package repository;
-import model.HasId;
+package org.starmatch.src.repository;
+import org.starmatch.src.model.HasId;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 import java.sql.*;
-import model.*;
+import org.starmatch.src.model.*;
 
 /**
  * The DBRepository class is a generic repository for performing CRUD operations on entities
@@ -18,13 +18,14 @@ public class DBRepository<T extends HasId> implements Repository<T> {
     private static final String URL = "jdbc:postgresql://localhost:5432/StarMatch";
     private static final String USER = "postgres";
     private static final String PASSWORD = "1234";
-    private static final String AGENT_TABLE = "User";
-    private static final String PROPERTY_TABLE = "properties";
-    private static final String CONTRACT_TABLE = "contracts";
-    private static final String APPOINTMENT_TABLE = "appointments";
-    private static final String CLIENT_TABLE = "clients";
-    private static final String REVIEW_TABLE = "reviews";
-    private static final String CLIENT_PREFERENCES_TABLE = "client_preferences";
+    private static final String USER_TABLE = "User";
+    private static final String ADMIN_TABLE = "Admin";
+    private static final String COMPATIBILITY_TABLE = "Compatibility";
+    private static final String QUOTE_TABLE = "Quote";
+    private static final String STARSIGN_TABLE = "StarSign";
+    private static final String TRAIT_TABLE = "Trait";
+    private static final String STARSIGNTRAIT_TABLE = "StarSign_Trait";
+    private static final String USERFRIENDS_TABLE = "User_Friends";
     private final Class<T> type;
     /**
      * Constructor for DBRepository.
@@ -43,9 +44,13 @@ public class DBRepository<T extends HasId> implements Repository<T> {
      */
     private Connection getConnection() {
         try {
+            Class.forName("org.postgresql.Driver");
+
             return DriverManager.getConnection(URL, USER, PASSWORD);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to establish database connection.");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
     /**
@@ -161,7 +166,7 @@ public class DBRepository<T extends HasId> implements Repository<T> {
             for (var field : currentClass.getDeclaredFields()) {
                 if (shouldIncludeField(field)) {
                     field.setAccessible(true);
-                    columns.add(toSnakeCase(field.getName()));
+                    columns.add(field.getName());
                     placeholders.add("?");
                 }
             }
@@ -221,7 +226,7 @@ public class DBRepository<T extends HasId> implements Repository<T> {
         for (var field : fields) {
             if (shouldIncludeField(field) && !field.getName().equalsIgnoreCase("id")) {
                 field.setAccessible(true);
-                sql.append(toSnakeCase(field.getName())).append(" = ?, ");
+                sql.append(field.getName()).append(" = ?, ");
             }
         }
         sql.setLength(sql.length() - 2);
@@ -275,7 +280,7 @@ public class DBRepository<T extends HasId> implements Repository<T> {
             for (var field : fields) {
                 if (shouldIncludeField(field)) {
                     field.setAccessible(true);
-                    Object value = resultSet.getObject(toSnakeCase(field.getName()));
+                    Object value = resultSet.getObject(field.getName());
 
                     if (value != null) {
                         if (field.getType().isEnum()) {
@@ -283,7 +288,7 @@ public class DBRepository<T extends HasId> implements Repository<T> {
                         } else if (field.getType() == java.util.Date.class) {
                             value = new java.util.Date(((Timestamp) value).getTime());
                         } else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                            value = resultSet.getBoolean(toSnakeCase(field.getName()));
+                            value = resultSet.getBoolean(field.getName());
                         }
                     }
 
@@ -301,13 +306,13 @@ public class DBRepository<T extends HasId> implements Repository<T> {
      */
     private String getTableName() {
         if (type == User.class) {
-            return AGENT_TABLE;
+            return USER_TABLE;
         } else if (type == Admin.class) {
-            return PROPERTY_TABLE;
+            return ADMIN_TABLE;
         } else if (type == Trait.class) {
-            return CONTRACT_TABLE;
+            return TRAIT_TABLE;
         } else if (type == Quote.class) {
-            return APPOINTMENT_TABLE;
+            return QUOTE_TABLE;
         }else {
             throw new IllegalArgumentException("Unknown type: " + type);
         }
@@ -321,13 +326,5 @@ public class DBRepository<T extends HasId> implements Repository<T> {
     private boolean shouldIncludeField(Field field) {
         return !Collection.class.isAssignableFrom(field.getType());
     }
-    /**
-     * Converts a camelCase string to snake_case.
-     *
-     * @param camelCase The camelCase string to be converted.
-     * @return The converted snake_case string.
-     */
-    private String toSnakeCase(String camelCase) {
-        return camelCase.replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase();
-    }
+
 }

@@ -1,8 +1,8 @@
-package repository;
+package org.starmatch.src.repository;
 
 import java.util.List;
 
-import model.HasId;
+import org.starmatch.src.model.HasId;
 
 /**
  * An interface that defines the basic CRUD operations for a repository.

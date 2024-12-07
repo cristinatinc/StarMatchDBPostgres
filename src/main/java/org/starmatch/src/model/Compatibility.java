@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents the compatibility between two users, identified by their user IDs and a compatibility score.

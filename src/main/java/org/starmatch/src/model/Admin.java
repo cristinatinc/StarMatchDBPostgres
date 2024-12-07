@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents an Admin with a unique ID, name, email, and password.

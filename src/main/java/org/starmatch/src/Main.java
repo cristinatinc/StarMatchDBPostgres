@@ -1,9 +1,12 @@
-import model.*;
-import repository.DBRepository;
-import repository.InFileRepository;
-import repository.InMemoryRepository;
-import repository.Repository;
+package org.starmatch.src;
 
+import org.starmatch.src.model.*;
+import org.starmatch.src.repository.*;
+import org.starmatch.src.repository.Repository;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -42,15 +45,21 @@ public class Main {
         ConsoleApp consoleAppFile = new ConsoleApp(starMatchControllerFile);
 //        consoleAppFile.start();
 
-        String DB_URL = "jdbc:sqlite:C:\\Users\\Cristina\\IdeaProjects\\StarMatch_DB\\starmatchDB.db";
-        String DB_USER = "user";
-        String DB_PASSWORD = "password";
-
         Repository<User> userDBRepo = new DBRepository<>(User.class);
         StarMatchService starMatchServiceDB = new StarMatchService(userDBRepo, adminRepository,signRepository, quoteRepository, traitRepository);
         StarMatchController starMatchControllerDB = new StarMatchController(starMatchServiceDB);
         ConsoleApp consoleAppDB = new ConsoleApp(starMatchControllerDB);
         consoleAppDB.start();
+
+//        String url = "jdbc:postgresql://localhost:5432/StarMatch";
+//        String user = "postgres";
+//        String password = "1234";
+//
+//        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+//            System.out.println("Connected to the database successfully!");
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents a quote associated with a specific elemental attribute (e.g., Fire, Water, Air, Earth).

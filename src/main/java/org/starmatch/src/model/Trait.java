@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents a trait associated with an element and a unique identifier.

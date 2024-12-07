@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 import java.io.Serializable;
 

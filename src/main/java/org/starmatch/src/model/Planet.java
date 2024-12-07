@@ -1,4 +1,4 @@
-package model;
+package org.starmatch.src.model;
 
 /**
  * Represents a planet with a unique ID, name, and associated astrological sign.
