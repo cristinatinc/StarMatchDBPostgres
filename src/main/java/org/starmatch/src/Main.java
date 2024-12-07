@@ -5,9 +5,6 @@ import org.starmatch.src.repository.*;
 import org.starmatch.src.repository.DBRepo.*;
 import org.starmatch.src.repository.Repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -59,13 +56,6 @@ public class Main {
         ConsoleApp consoleAppDB = new ConsoleApp(starMatchControllerDB);
         consoleAppDB.start();
 
-
-//
-//        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-//            System.out.println("Connected to the database successfully!");
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
     }
 
     /**
