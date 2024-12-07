@@ -9,8 +9,5 @@
         <module name="StarMatch" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="StarMatchDBPostgres" target="23" />
-    </bytecodeTargetLevel>
   </component>
 </project>

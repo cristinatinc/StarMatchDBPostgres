@@ -2,6 +2,7 @@ package org.starmatch.src;
 
 import org.starmatch.src.model.*;
 import org.starmatch.src.repository.*;
+import org.starmatch.src.repository.DBRepo.*;
 import org.starmatch.src.repository.Repository;
 
 import java.sql.Connection;
@@ -44,16 +45,21 @@ public class Main {
         StarMatchController starMatchControllerFile = new StarMatchController(starMatchServiceFile);
         ConsoleApp consoleAppFile = new ConsoleApp(starMatchControllerFile);
 //        consoleAppFile.start();
+        String url = "jdbc:postgresql://localhost:5432/StarMatch";
+        String user = "postgres";
+        String password = "1234";
 
-        Repository<User> userDBRepo = new DBRepository<>(User.class);
-        StarMatchService starMatchServiceDB = new StarMatchService(userDBRepo, adminRepository,signRepository, quoteRepository, traitRepository);
+        Repository<User> userDBRepo = new UserDBRepository(url,user,password);
+        Repository<Admin> adminDBRepo = new AdminDBRepository(url,user,password);
+        Repository<Quote> quoteDBRepo = new QuoteDBRepository(url,user,password);
+        Repository<Trait> traitDBRepo = new TraitDBRepository(url,user,password);
+        Repository<StarSign> starSignDBRepo = new StarSignDBRepository(url,user,password);
+        StarMatchService starMatchServiceDB = new StarMatchService(userDBRepo, adminDBRepo,starSignDBRepo, quoteDBRepo, traitDBRepo);
         StarMatchController starMatchControllerDB = new StarMatchController(starMatchServiceDB);
         ConsoleApp consoleAppDB = new ConsoleApp(starMatchControllerDB);
         consoleAppDB.start();
 
-//        String url = "jdbc:postgresql://localhost:5432/StarMatch";
-//        String user = "postgres";
-//        String password = "1234";
+
 //
 //        try (Connection conn = DriverManager.getConnection(url, user, password)) {
 //            System.out.println("Connected to the database successfully!");
