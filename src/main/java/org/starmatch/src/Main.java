@@ -8,54 +8,91 @@ import org.starmatch.src.repository.Repository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     /**
-     * Main function where the inMemoryRepositories, InFileRepositories are initialized and the application starts.
+     * Main function which serves as the starting point of the application.
      */
     public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Select the storage type:");
+        System.out.println("1: In-Memory Storage");
+        System.out.println("2: File-based Storage");
+        System.out.println("3: Database Storage");
+        System.out.print("Your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        StarMatchService starMatchService;
+        switch (choice) {
+            case 1 -> {
+                System.out.println("Using In-Memory Storage...");
+                starMatchService = setupInMemoryService();
+            }
+            case 2 -> {
+                System.out.println("Using File-based Storage...");
+                System.out.print("Enter user (Cristina/Ioana): ");
+                String user = scanner.nextLine();
+                starMatchService = setupFileBasedService(user);
+            }
+            case 3 -> {
+                System.out.println("Using Database Storage...");
+                starMatchService = setupDatabaseService();
+            }
+            default -> {
+                System.out.println("Invalid choice. Exiting.");
+                return;
+            }
+        }
+
+        StarMatchController starMatchController = new StarMatchController(starMatchService);
+        ConsoleApp consoleApp = new ConsoleApp(starMatchController);
+        consoleApp.start();
+    }
+
+    /**
+     * Function to set up the In Memory Service
+     * @return new StarMatchService
+     */
+    private static StarMatchService setupInMemoryService() {
         Repository<User> userRepository = createInMemoryUserRepository();
         Repository<Admin> adminRepository = createInMemoryAdminRepository();
         Repository<StarSign> signRepository = createInMemoryStarSignRepository();
         Repository<Quote> quoteRepository = createInMemoryQuoteRepository();
         Repository<Trait> traitRepository = createInMemoryTraitRepository();
+        return new StarMatchService(userRepository, adminRepository, signRepository, quoteRepository, traitRepository);
+    }
 
-        StarMatchService starMatchService = new StarMatchService(userRepository, adminRepository,signRepository, quoteRepository, traitRepository);
-        StarMatchController starMatchController = new StarMatchController(starMatchService);
-        ConsoleApp consoleApp = new ConsoleApp(starMatchController);
-//        consoleApp.start();
-//
-        Repository<User> userFileRepo = new InFileRepository<>("C:\\Users\\Cristina\\IdeaProjects\\StarMatch\\starmatch\\src\\files\\users.txt", User.class);
-        Repository<Admin> adminFileRepo = new InFileRepository<>("C:\\Users\\Cristina\\IdeaProjects\\StarMatch\\starmatch\\src\\files\\admins.txt", Admin.class);
-        Repository<StarSign> starSignFileRepo = new InFileRepository<>("C:\\Users\\Cristina\\IdeaProjects\\StarMatch\\starmatch\\src\\files\\starsigns.txt", StarSign.class);
-        Repository<Quote> quoteFileRepo = new InFileRepository<>("C:\\Users\\Cristina\\IdeaProjects\\StarMatch\\starmatch\\src\\files\\quotes.txt", Quote.class);
-        Repository<Trait> traitFileRepo = new InFileRepository<>("C:\\Users\\Cristina\\IdeaProjects\\StarMatch\\starmatch\\src\\files\\traits.txt", Trait.class);
+    /**
+     * Function to set up the FileBased Service
+     * @return new StarMatchServie
+     */
+    private static StarMatchService setupFileBasedService(String user) {
+        String basePath = "C:\\Users\\" + user + "\\IdeaProjects\\StarMatchDBPostgres\\src\\main\\java\\org\\starmatch\\src\\files\\";
+        Repository<User> userFileRepo = new InFileRepository<>(basePath + "users.txt", User.class);
+        Repository<Admin> adminFileRepo = new InFileRepository<>(basePath + "admins.txt", Admin.class);
+        Repository<StarSign> starSignFileRepo = new InFileRepository<>(basePath + "starsigns.txt", StarSign.class);
+        Repository<Quote> quoteFileRepo = new InFileRepository<>(basePath + "quotes.txt", Quote.class);
+        Repository<Trait> traitFileRepo = new InFileRepository<>(basePath + "traits.txt", Trait.class);
+        return new StarMatchService(userFileRepo, adminFileRepo, starSignFileRepo, quoteFileRepo, traitFileRepo);
+    }
 
-//        Repository<User> userFileRepo = new InFileRepository<User>("C:\\Users\\andre\\IntelliJProjects\\Sem2\\StarMatch\\starmatch\\src\\files\\users.txt", User.class);
-//        Repository<Admin> adminFileRepo = new InFileRepository<Admin>("C:\\Users\\andre\\IntelliJProjects\\Sem2\\StarMatch\\starmatch\\src\\files\\admins.txt", Admin.class);
-//        Repository<StarSign> starSignFileRepo = new InFileRepository<StarSign>("C:\\Users\\andre\\IntelliJProjects\\Sem2\\StarMatch\\starmatch\\src\\files\\starsigns.txt", StarSign.class);
-//        Repository<Quote> quoteFileRepo = new InFileRepository<Quote>("C:\\Users\\andre\\IntelliJProjects\\Sem2\\StarMatch\\starmatch\\src\\files\\quotes.txt", Quote.class);
-//        Repository<Trait> traitFileRepo = new InFileRepository<Trait>("C:\\Users\\andre\\IntelliJProjects\\Sem2\\StarMatch\\starmatch\\src\\files\\traits.txt", Trait.class);
-
-
-        StarMatchService starMatchServiceFile = new StarMatchService(userFileRepo, adminFileRepo, starSignFileRepo, quoteFileRepo, traitFileRepo);
-        StarMatchController starMatchControllerFile = new StarMatchController(starMatchServiceFile);
-        ConsoleApp consoleAppFile = new ConsoleApp(starMatchControllerFile);
-//        consoleAppFile.start();
+    /**
+     * Function to set up the Database Service
+     * @return new StarMatchService
+     */
+    private static StarMatchService setupDatabaseService() {
         String url = "jdbc:postgresql://localhost:5432/StarMatch";
         String user = "postgres";
         String password = "1234";
 
-        Repository<User> userDBRepo = new UserDBRepository(url,user,password);
-        Repository<Admin> adminDBRepo = new AdminDBRepository(url,user,password);
-        Repository<Quote> quoteDBRepo = new QuoteDBRepository(url,user,password);
-        Repository<Trait> traitDBRepo = new TraitDBRepository(url,user,password);
-        Repository<StarSign> starSignDBRepo = new StarSignDBRepository(url,user,password);
-        StarMatchService starMatchServiceDB = new StarMatchService(userDBRepo, adminDBRepo,starSignDBRepo, quoteDBRepo, traitDBRepo);
-        StarMatchController starMatchControllerDB = new StarMatchController(starMatchServiceDB);
-        ConsoleApp consoleAppDB = new ConsoleApp(starMatchControllerDB);
-        consoleAppDB.start();
-
+        Repository<User> userDBRepo = new UserDBRepository(url, user, password);
+        Repository<Admin> adminDBRepo = new AdminDBRepository(url, user, password);
+        Repository<Quote> quoteDBRepo = new QuoteDBRepository(url, user, password);
+        Repository<Trait> traitDBRepo = new TraitDBRepository(url, user, password);
+        Repository<StarSign> starSignDBRepo = new StarSignDBRepository(url, user, password);
+        return new StarMatchService(userDBRepo, adminDBRepo, starSignDBRepo, quoteDBRepo, traitDBRepo);
     }
 
     /**
