@@ -64,11 +64,15 @@ public class ConsoleApp {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        if (starMatchController.handleUserLogin(email, password)) {
-            System.out.println("Login successful! Welcome, " + email);
-            userMenu(scanner, email);
-        } else {
-            throw new ValidationException("Invalid credentials. Please try again.");
+        try {
+            if (starMatchController.handleUserLogin(email, password)) {
+                System.out.println("Login successful! Welcome, " + email);
+                userMenu(scanner, email);
+            } else {
+                throw new ValidationException("Invalid credentials. Please try again.");
+            }
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -83,11 +87,15 @@ public class ConsoleApp {
         System.out.print("Password: ");
         String password = scanner.nextLine();
 
-        if (starMatchController.handleAdminLogin(email, password)) {
-            System.out.println("Login successful! Welcome, " + email);
-            adminMenu(scanner);
-        } else {
-            throw new ValidationException("Invalid credentials. Please try again.");
+        try {
+            if (starMatchController.handleAdminLogin(email, password)) {
+                System.out.println("Login successful! Welcome, " + email);
+                adminMenu(scanner);
+            } else {
+                throw new ValidationException("Invalid credentials. Please try again.");
+            }
+        } catch (ValidationException e) {
+            System.out.println(e.getMessage());
         }
     }
 
@@ -709,12 +717,17 @@ public class ConsoleApp {
      * @param userEmail The email of the currently logged-in user.
      */
     public void viewFriends(String userEmail) {
-        System.out.println("Your friends:");
-        List<User> friends = starMatchController.viewFriends(userEmail);
-        if(friends.isEmpty())
-            throw new EntityNotFoundException("No friends found.");
-        else
-            friends.forEach(friend -> System.out.println(friend.getName() + " (" + friend.getEmail() + ")"));
+        try {
+            System.out.println("Your friends:");
+            List<User> friends = starMatchController.viewFriends(userEmail);
+            if (friends.isEmpty()) {
+                throw new EntityNotFoundException("No friends found.");
+            } else {
+                friends.forEach(friend -> System.out.println(friend.getName() + " (" + friend.getEmail() + ")"));
+            }
+        } catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
