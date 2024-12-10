@@ -9,12 +9,29 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository implementation for managing Traits in the database.
+ * Extends {@link DBRepository} to handle CRUD operations for {@link Trait}.
+ */
 public class TraitDBRepository extends DBRepository<Trait> {
 
+    /**
+     * Constructs a {@link TraitDBRepository} with the specified database connection parameters.
+     *
+     * @param dbUrl      the URL of the PostgreSQL database.
+     * @param dbUser     the username for database authentication.
+     * @param dbPassword the password for database authentication.
+     */
     public TraitDBRepository(String dbUrl, String dbUser, String dbPassword) {
         super(dbUrl, dbUser, dbPassword);
     }
 
+    /**
+     * Creates a new {@link Trait} in the database.
+     *
+     * @param obj the {@link Trait} object to create.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void create(Trait obj) {
         String sql = "INSERT INTO \"Trait\" (element, traitName) VALUES (?, ?)";
@@ -29,6 +46,13 @@ public class TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Retrieves a {@link Trait} by its ID.
+     *
+     * @param id the ID of the {@link Trait}.
+     * @return the {@link Trait} object, or {@code null} if not found.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public Trait get(Integer id) {
         String sql = "SELECT * FROM \"Trait\" WHERE id = ?";
@@ -47,6 +71,12 @@ public class TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Updates an existing {@link Trait} in the database.
+     *
+     * @param obj the {@link Trait} object with updated values.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void update(Trait obj) {
         String sql = "UPDATE \"Trait\" SET element = ?, traitName = ? WHERE id = ?";
@@ -62,6 +92,12 @@ public class TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Deletes a {@link Trait} from the database.
+     *
+     * @param id the ID of the {@link Trait} to delete.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void delete(Integer id) {
         String sql = "DELETE FROM \"Trait\" WHERE id = ?";
@@ -74,6 +110,12 @@ public class TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Retrieves all {@link Trait} entries from the database.
+     *
+     * @return a list of {@link Trait} objects.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public List<Trait> getAll() {
         String sql = "SELECT * FROM \"Trait\"";
@@ -92,6 +134,13 @@ public class TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Extracts a {@link Trait} object from the current row of the {@link ResultSet}.
+     *
+     * @param resultSet the {@link ResultSet} from which to extract data.
+     * @return the {@link Trait} object.
+     * @throws SQLException if a SQL error occurs.
+     */
     public static Trait extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new Trait(
                 Element.valueOf(resultSet.getString("element")),  // Convert string back to enum

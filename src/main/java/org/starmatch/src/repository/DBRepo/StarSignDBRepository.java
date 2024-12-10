@@ -10,15 +10,33 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository implementation for managing Star Signs in the database.
+ * Extends {@link DBRepository} to handle CRUD operations for {@link StarSign}.
+ */
 public class StarSignDBRepository extends DBRepository<StarSign> {
 
     private final StarSign_TraitDBRepository starSignTraitRepository;
 
+    /**
+     * Constructs a {@link StarSignDBRepository} with the specified database connection parameters.
+     *
+     * @param dbUrl      the URL of the PostgreSQL database.
+     * @param dbUser     the username for database authentication.
+     * @param dbPassword the password for database authentication.
+     */
     public StarSignDBRepository(String dbUrl, String dbUser, String dbPassword) {
         super(dbUrl, dbUser, dbPassword);
         this.starSignTraitRepository = new StarSign_TraitDBRepository(dbUrl, dbUser, dbPassword);
     }
 
+    /**
+     * Creates a new {@link StarSign} in the database.
+     * Automatically associates the traits provided with the star sign in the "StarSign_Trait" table.
+     *
+     * @param obj the {@link StarSign} object to create.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void create(StarSign obj) {
         String sql = "INSERT INTO \"StarSign\" (starName, element) VALUES (?, ?)";
@@ -44,6 +62,13 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
         }
     }
 
+    /**
+     * Retrieves a {@link StarSign} by its ID.
+     *
+     * @param id the ID of the {@link StarSign}.
+     * @return the {@link StarSign} object, or {@code null} if not found.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public StarSign get(Integer id) {
         String sql = "SELECT * FROM \"StarSign\" WHERE id = ?";
@@ -62,6 +87,13 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
         }
     }
 
+    /**
+     * Updates an existing {@link StarSign} in the database.
+     * Clears and re-adds the associated traits for the star sign.
+     *
+     * @param obj the {@link StarSign} object with updated values.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void update(StarSign obj) {
         String sql = "UPDATE \"StarSign\" SET starName = ?, element = ? WHERE id = ?";
@@ -73,7 +105,6 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
 
             statement.executeUpdate();
 
-            // Remove old traits and add new ones
             starSignTraitRepository.removeTraitsFromStarSign(obj.getId());  // Remove previous traits
             for (Trait trait : obj.getTraits()) {
                 starSignTraitRepository.addTraitToStarSign(obj.getId(), trait.getId());  // Add new traits
@@ -83,6 +114,12 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
         }
     }
 
+    /**
+     * Deletes a {@link StarSign} from the database.
+     *
+     * @param id the ID of the {@link StarSign} to delete.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public void delete(Integer id) {
         String sql = "DELETE FROM \"StarSign\" WHERE id = ?";
@@ -95,6 +132,13 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
         }
     }
 
+    /**
+     * Retrieves all {@link StarSign} entries from the database.
+     * Includes associated traits for each star sign.
+     *
+     * @return a list of {@link StarSign} objects.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     @Override
     public List<StarSign> getAll() {
         String sql = "SELECT * FROM \"StarSign\"";
@@ -113,12 +157,19 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
         }
     }
 
+    /**
+     * Extracts a {@link StarSign} object from the current row of the {@link ResultSet}.
+     * Fetches associated traits for the star sign.
+     *
+     * @param resultSet the {@link ResultSet} from which to extract data.
+     * @return the {@link StarSign} object.
+     * @throws SQLException if a SQL error occurs.
+     */
     private StarSign extractFromResultSet(ResultSet resultSet) throws SQLException {
         String starName = resultSet.getString("starName");
         Element element = Element.valueOf(resultSet.getString("element"));
         Integer id = resultSet.getInt("id");
 
-        // Fetch the traits associated with the StarSign
         List<Trait> traits = starSignTraitRepository.getTraitsForStarSign(id);
 
         return new StarSign(starName, element, traits, id);

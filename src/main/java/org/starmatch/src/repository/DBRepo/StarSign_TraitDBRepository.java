@@ -9,13 +9,30 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository implementation for managing relationships between Star Signs and Traits in the database.
+ * Extends {@link DBRepository} to provide additional functionality for the "StarSign_Trait" table.
+ */
 public class StarSign_TraitDBRepository extends DBRepository<Trait> {
 
+    /**
+     * Constructs a {@link StarSign_TraitDBRepository} with the specified database connection parameters.
+     *
+     * @param dbUrl      the URL of the PostgreSQL database.
+     * @param dbUser     the username for database authentication.
+     * @param dbPassword the password for database authentication.
+     */
     public StarSign_TraitDBRepository(String dbUrl, String dbUser, String dbPassword) {
         super(dbUrl, dbUser, dbPassword);
     }
 
-    // Add a trait to a StarSign
+    /**
+     * Adds a trait to a star sign by inserting into the "StarSign_Trait" table.
+     *
+     * @param starSignId the ID of the star sign.
+     * @param traitId    the ID of the trait.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     public void addTraitToStarSign(Integer starSignId, Integer traitId) {
         String sql = "INSERT INTO \"StarSign_Trait\" (starSignId, traitId) VALUES (?, ?)";
 
@@ -28,7 +45,12 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
-    // Remove all traits from a StarSign
+    /**
+     * Removes all traits associated with a star sign by deleting from the "StarSign_Trait" table.
+     *
+     * @param starSignId the ID of the star sign.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     public void removeTraitsFromStarSign(Integer starSignId) {
         String sql = "DELETE FROM \"StarSign_Trait\" WHERE starSignId = ?";
 
@@ -40,7 +62,13 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
-    // Get all traits for a StarSign
+    /**
+     * Retrieves all traits associated with a specific star sign by joining the "Trait" and "StarSign_Trait" tables.
+     *
+     * @param starSignId the ID of the star sign.
+     * @return a list of {@link Trait} objects associated with the star sign.
+     * @throws DatabaseException if a SQL error occurs.
+     */
     public List<Trait> getTraitsForStarSign(Integer starSignId) {
         String sql = "SELECT t.* FROM \"Trait\" t " +
                 "JOIN \"StarSign_Trait\" st ON t.id = st.traitId " +
@@ -65,30 +93,46 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
         }
     }
 
+    /**
+     * Not implemented, not neeeded.
+     * @param obj The object to create.
+     */
     @Override
     public void create(Trait obj) {
-        // Implementation for creating a Trait, if needed
     }
 
+    /**
+     * Not implemented, not needed.
+     * @param id The unique identifier of the object to retrieve.
+     * @return
+     */
     @Override
     public Trait get(Integer id) {
-        // Implementation for getting a specific Trait, if needed
         return null;
     }
 
+    /**
+     * Not implemneted, not needed.
+     * @param obj The object to update.
+     */
     @Override
     public void update(Trait obj) {
-        // Implementation for updating a Trait, if needed
     }
 
+    /**
+     * Not implemented, not needed.
+     * @param id The unique identifier of the object to delete.
+     */
     @Override
     public void delete(Integer id) {
-        // Implementation for deleting a Trait, if needed
     }
 
+    /**
+     * Not implemented, not needed.
+     * @return
+     */
     @Override
     public List<Trait> getAll() {
-        // Implementation for getting all Traits, if needed
         return null;
     }
 }

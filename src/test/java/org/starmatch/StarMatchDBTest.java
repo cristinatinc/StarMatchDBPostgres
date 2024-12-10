@@ -12,6 +12,12 @@ import java.time.LocalTime;
 import org.starmatch.src.model.*;
 import org.starmatch.src.repository.DBRepo.*;
 
+/**
+ * This class contains unit tests for CRUD operations on various repositories
+ * in the StarMatch application, using mocked database repositories.
+ * Each repository is tested for creating, reading, updating, and deleting
+ * entities such as users, admins, star signs, traits, and quotes.
+ */
 public class StarMatchDBTest {
     private UserDBRepository userDBRepo;
     private AdminDBRepository adminDBRepo;
@@ -19,6 +25,9 @@ public class StarMatchDBTest {
     private TraitDBRepository traitDBRepo;
     private QuoteDBRepository quoteDBRepo;
 
+    /**
+     * Initializes mocked database repository instances before each test.
+     */
     @BeforeEach
     void setUp() {
         userDBRepo = mock(UserDBRepository.class);
@@ -28,9 +37,12 @@ public class StarMatchDBTest {
         quoteDBRepo = mock(QuoteDBRepository.class);
     }
 
+    /**
+     * Tests the basic CRUD (Create, Read, Update, Delete) operations
+     * for users, admins, star signs, traits, and quotes using mocked repositories.
+     */
     @Test
     void testCRUDDBOperations() {
-
         // --User CRUD--
         User mockUser = new User(1, "Test User", LocalDate.of(1995, 12, 15), LocalTime.of(9, 0), "Bucharest", "testuser@gmail.com", "test123");
         doNothing().when(userDBRepo).create(mockUser);

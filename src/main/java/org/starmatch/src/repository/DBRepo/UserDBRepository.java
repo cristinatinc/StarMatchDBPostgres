@@ -8,12 +8,29 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Repository for managing User entities in the database.
+ * Provides methods to perform CRUD operations, manage friendships, and retrieve user-related data.
+ */
 public class UserDBRepository extends DBRepository<User> {
 
+    /**
+     * Constructor for initializing the repository with database connection details.
+     *
+     * @param dbUrl      the URL of the database
+     * @param dbUser     the database username
+     * @param dbPassword the database password
+     */
     public UserDBRepository(String dbUrl, String dbUser, String dbPassword) {
         super(dbUrl, dbUser, dbPassword);
     }
 
+    /**
+     * Creates a new User entity in the database.
+     * Also saves the user's friendships, if any.
+     *
+     * @param obj the User object to be created
+     */
     @Override
     public void create(User obj) {
         String sql = "INSERT INTO \"User\" (name, birthDate, birthTime, birthPlace, email, password) " +
@@ -43,6 +60,13 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Retrieves a User entity from the database by its ID.
+     * Includes the user's friendships.
+     *
+     * @param id the ID of the user to retrieve
+     * @return the User object if found, null otherwise
+     */
     @Override
     public User get(Integer id) {
         String sql = "SELECT * FROM \"User\" WHERE id = ?";
@@ -66,6 +90,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Updates an existing User entity in the database.
+     * Also updates the user's friendships.
+     *
+     * @param obj the User object with updated data
+     */
     @Override
     public void update(User obj) {
         String sql = "UPDATE \"User\" SET name = ?, birthDate = ?, birthTime = ?, birthPlace = ?, " +
@@ -90,6 +120,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Deletes a User entity from the database by its ID.
+     * Also removes all friendships related to the user.
+     *
+     * @param id the ID of the user to delete
+     */
     @Override
     public void delete(Integer id) {
         String sql = "DELETE FROM \"User\" WHERE id = ?";
@@ -106,6 +142,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Retrieves all User entities from the database.
+     * Includes their respective friendships.
+     *
+     * @return a list of all User objects in the database
+     */
     @Override
     public List<User> getAll() {
         String sql = "SELECT * FROM \"User\"";
@@ -129,6 +171,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Saves the friendships of a user in the database.
+     * Ensures bidirectional friendships are stored.
+     *
+     * @param user the User object whose friendships are to be saved
+     */
     private void saveFriendships(User user) {
         String sql = "INSERT INTO \"User_Friends\" (userId, friendId) VALUES (?, ?)";
 
@@ -165,7 +213,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
-
+    /**
+     * Updates the friendships of a user in the database.
+     * Removes old friendships and saves the new ones.
+     *
+     * @param user the User object whose friendships are to be updated
+     */
     private void updateFriendships(User user) {
         // Delete old friendships first
         deleteFriendships(user.getId());
@@ -174,6 +227,11 @@ public class UserDBRepository extends DBRepository<User> {
         saveFriendships(user);
     }
 
+    /**
+     * Deletes all friendships related to a user from the database.
+     *
+     * @param userId the ID of the user whose friendships are to be deleted
+     */
     private void deleteFriendships(Integer userId) {
         String sql = "DELETE FROM \"User_Friends\" WHERE userId = ? OR friendId = ?";
 
@@ -186,6 +244,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Retrieves the friends of a user from the database.
+     *
+     * @param userId the ID of the user whose friends are to be retrieved
+     * @return a list of User objects representing the user's friends
+     */
     private List<User> getFriends(Integer userId) {
         String sql = "SELECT * FROM \"User\" u JOIN \"User_Friends\" uf ON u.id = uf.friendId WHERE uf.userId = ?";
 
@@ -204,6 +268,12 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Retrieves the email addresses of a user's friends from the database.
+     *
+     * @param userId the ID of the user whose friends' emails are to be retrieved
+     * @return a list of email addresses of the user's friends
+     */
     private List<String> getRawFriendEmails(Integer userId) {
         String sql = "SELECT u.email FROM \"User_Friends\" uf JOIN \"User\" u ON u.id = uf.friendId WHERE uf.userId = ?";
 
@@ -222,6 +292,13 @@ public class UserDBRepository extends DBRepository<User> {
         }
     }
 
+    /**
+     * Extracts a User object from a ResultSet.
+     *
+     * @param resultSet the ResultSet containing user data
+     * @return the User object created from the ResultSet
+     * @throws SQLException if a database access error occurs
+     */
     public static User extractFromResultSet(ResultSet resultSet) throws SQLException {
         return new User(
                 resultSet.getInt("id"),

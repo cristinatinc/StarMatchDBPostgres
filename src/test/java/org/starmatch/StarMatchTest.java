@@ -5,24 +5,23 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.starmatch.src.utils.InMemoryData.*;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import static org.mockito.Mockito.*;
-
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
-import org.junit.jupiter.api.function.Executable;
 import org.starmatch.src.StarMatchService;
 import org.starmatch.src.exceptions.BusinessLogicException;
 import org.starmatch.src.exceptions.EntityNotFoundException;
 import org.starmatch.src.model.*;
 import org.starmatch.src.repository.*;
-import org.starmatch.src.repository.DBRepo.UserDBRepository;
 
+/**
+ * Unit tests for the StarMatch application.
+ *
+ * This class tests various CRUD operations, complex service methods,
+ * and business logic implemented in the StarMatchService and repositories.
+ */
 public class StarMatchTest {
 
     private Repository<User> userRepository;
@@ -31,6 +30,9 @@ public class StarMatchTest {
     private Repository<Trait> traitRepository;
     private Repository<Quote> quoteRepository;
 
+    /**
+     * Sets up in-memory repositories for testing.
+     */
     @BeforeEach
     public void setUp() {
         userRepository = createInMemoryUserRepository();
@@ -40,7 +42,10 @@ public class StarMatchTest {
         quoteRepository = createInMemoryQuoteRepository();
     }
 
-
+    /**
+     * Tests basic CRUD operations for all entity types (User, Admin, StarSign, Trait, Quote).
+     * Verifies creation, retrieval, update, and deletion functionality in repositories.
+     */
     @Test
     public void testCRUDOperations() {
         // --- CRUD for User ---
@@ -124,6 +129,18 @@ public class StarMatchTest {
         assertNull(deletedQuote);
     }
 
+    /**
+     * Tests complex operations and business logic in StarMatchService.
+     *
+     * This includes:
+     * - Calculating natal charts and personality traits
+     * - Generating personalized quotes
+     * - Adding and removing friends
+     * - Validating emails
+     * - Filtering users and quotes
+     * - Determining the most popular elements among users
+     * - Finding friends near a user's location
+     */
     @Test
     public void testComplexOperations() {
         User user = new User(5, "Test User", LocalDate.of(1995, 12, 15), LocalTime.of(9,0), "Bucharest", "testuser@gmail.com", "test123");
