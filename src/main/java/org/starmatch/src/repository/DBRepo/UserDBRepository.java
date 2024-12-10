@@ -1,5 +1,6 @@
 package org.starmatch.src.repository.DBRepo;
 
+import org.starmatch.src.exceptions.DatabaseException;
 import org.starmatch.src.model.User;
 import org.starmatch.src.repository.DBRepository;
 
@@ -38,7 +39,7 @@ public class UserDBRepository extends DBRepository<User> {
             saveFriendships(obj);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -61,7 +62,7 @@ public class UserDBRepository extends DBRepository<User> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -85,7 +86,7 @@ public class UserDBRepository extends DBRepository<User> {
             updateFriendships(obj);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -101,7 +102,7 @@ public class UserDBRepository extends DBRepository<User> {
             deleteFriendships(id);
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -124,7 +125,7 @@ public class UserDBRepository extends DBRepository<User> {
 
             return users;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -160,7 +161,7 @@ public class UserDBRepository extends DBRepository<User> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -181,7 +182,7 @@ public class UserDBRepository extends DBRepository<User> {
             statement.setInt(2, userId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -199,7 +200,7 @@ public class UserDBRepository extends DBRepository<User> {
 
             return friends;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -217,7 +218,7 @@ public class UserDBRepository extends DBRepository<User> {
 
             return emails;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 

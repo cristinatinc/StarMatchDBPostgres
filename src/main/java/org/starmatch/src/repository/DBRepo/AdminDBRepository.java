@@ -1,5 +1,6 @@
 package org.starmatch.src.repository.DBRepo;
 
+import org.starmatch.src.exceptions.DatabaseException;
 import org.starmatch.src.model.Admin;
 import org.starmatch.src.repository.DBRepository;
 
@@ -24,7 +25,7 @@ public class AdminDBRepository extends DBRepository<Admin> {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -42,7 +43,7 @@ public class AdminDBRepository extends DBRepository<Admin> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -58,7 +59,7 @@ public class AdminDBRepository extends DBRepository<Admin> {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -70,7 +71,7 @@ public class AdminDBRepository extends DBRepository<Admin> {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -88,7 +89,7 @@ public class AdminDBRepository extends DBRepository<Admin> {
 
             return admins;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 

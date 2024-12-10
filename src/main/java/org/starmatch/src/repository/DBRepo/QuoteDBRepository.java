@@ -1,5 +1,6 @@
 package org.starmatch.src.repository.DBRepo;
 
+import org.starmatch.src.exceptions.DatabaseException;
 import org.starmatch.src.model.Quote;
 import org.starmatch.src.model.Element;
 import org.starmatch.src.repository.DBRepository;
@@ -24,7 +25,7 @@ public class QuoteDBRepository extends DBRepository<Quote> {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -42,7 +43,7 @@ public class QuoteDBRepository extends DBRepository<Quote> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -57,7 +58,7 @@ public class QuoteDBRepository extends DBRepository<Quote> {
 
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -69,7 +70,7 @@ public class QuoteDBRepository extends DBRepository<Quote> {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -87,7 +88,7 @@ public class QuoteDBRepository extends DBRepository<Quote> {
 
             return quotes;
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 

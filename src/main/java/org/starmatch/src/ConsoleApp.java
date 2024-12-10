@@ -334,8 +334,11 @@ public class ConsoleApp {
         String quoteID = scanner.nextLine();
         System.out.print("New quote text: ");
         String quoteText = scanner.nextLine();
-
-        starMatchController.updateQuote(Integer.valueOf(quoteID), quoteText);
+        try{
+        starMatchController.updateQuote(Integer.valueOf(quoteID), quoteText);}
+        catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -417,8 +420,11 @@ public class ConsoleApp {
         starMatchController.viewAdmins();
         System.out.print("Admin ID: ");
         String adminID = scanner.nextLine();
-
-        starMatchController.removeAdmin(Integer.valueOf(adminID));
+        try{
+        starMatchController.removeAdmin(Integer.valueOf(adminID));}
+        catch (EntityNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     /**
@@ -443,7 +449,7 @@ public class ConsoleApp {
             starMatchController.updateAdmin(adminId, name, email, password);
             System.out.println("Admin updated.");
         }
-        catch (ValidationException e){
+        catch (ValidationException | EntityNotFoundException e){
             System.out.println(e.getMessage());
         }
 
@@ -491,7 +497,8 @@ public class ConsoleApp {
         String traitElement = scanner.nextLine();
         Element element;
         try {
-            element = Element.valueOf(traitElement);
+            String normalizedElement = traitElement.substring(0, 1).toUpperCase() + traitElement.substring(1).toLowerCase();
+            element = Element.valueOf(normalizedElement);
         } catch (ValidationException e) {
             System.out.println(e.getMessage());
             return;
@@ -531,13 +538,18 @@ public class ConsoleApp {
         Element element = null;
         if (!traitElement.isBlank()) {
             try {
-                element = Element.valueOf(traitElement);
-            } catch (BusinessLogicException e) {
+                String normalizedElement = traitElement.substring(0, 1).toUpperCase() + traitElement.substring(1).toLowerCase();
+                element = Element.valueOf(normalizedElement);
+            } catch (BusinessLogicException  e) {
                 System.out.println("Invalid element specified. Trait not updated.");
                 return;
             }
         }
-        starMatchController.updateTrait(Integer.valueOf(traitID),traitName,element);
+        try{
+        starMatchController.updateTrait(Integer.valueOf(traitID),traitName,element);}
+        catch (EntityNotFoundException e){
+            System.out.println(e.getMessage());
+        }
     }
 
     /**

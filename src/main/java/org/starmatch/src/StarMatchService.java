@@ -85,6 +85,9 @@ public class StarMatchService {
      * Removes an admin by ID from the admin repository.
      */
     public void removeAdmin(Integer adminId){
+        if(!adminRepository.getAll().contains(adminId)) {
+            throw new EntityNotFoundException("Admin not found");
+        }
         adminRepository.delete(adminId);
     }
 
@@ -92,6 +95,9 @@ public class StarMatchService {
      * Updates admin information.
      */
     public void updateAdmin(Integer adminId, String name, String email, String password) {
+        if(!adminRepository.getAll().contains(adminId)) {
+            throw new EntityNotFoundException("Admin not found");
+        }
         Admin admin = adminRepository.get(adminId);
         if (!name.isBlank()) admin.setName(name);
         if (!email.isBlank()) admin.setEmail(email);
@@ -130,6 +136,9 @@ public class StarMatchService {
      * Updates a quote's text by its ID.
      */
     public void updateQuote(Integer quoteId, String newQuoteText) {
+        if(!quoteRepository.getAll().contains(quoteId)) {
+            throw new EntityNotFoundException("Quote not found");
+        }
         Quote quote = quoteRepository.get(quoteId);
         quote.setQuoteText(newQuoteText);
         quoteRepository.update(quote);
@@ -161,6 +170,9 @@ public class StarMatchService {
      */
     public void updateTrait(Integer traitID, String traitName, Element element){
         Trait trait = traitRepository.get(traitID);
+        if (trait == null) {
+            throw new EntityNotFoundException("Trait with ID " + traitID + " does not exist.");
+        }
         if(!traitName.isBlank()) trait.setTraitName(traitName);
         if(element!=null) trait.setElement(element);
         traitRepository.update(trait);

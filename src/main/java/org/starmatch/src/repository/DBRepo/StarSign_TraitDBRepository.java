@@ -1,5 +1,6 @@
 package org.starmatch.src.repository.DBRepo;
 
+import org.starmatch.src.exceptions.DatabaseException;
 import org.starmatch.src.model.Element;
 import org.starmatch.src.model.Trait;
 import org.starmatch.src.repository.DBRepository;
@@ -23,7 +24,7 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
             statement.setInt(2, traitId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error adding trait to StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -35,7 +36,7 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
             statement.setInt(1, starSignId);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error removing traits from StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -60,7 +61,7 @@ public class StarSign_TraitDBRepository extends DBRepository<Trait> {
 
             return traits;
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching traits for StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 

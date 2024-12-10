@@ -1,5 +1,6 @@
 package org.starmatch.src.repository.DBRepo;
 
+import org.starmatch.src.exceptions.DatabaseException;
 import org.starmatch.src.model.Element;
 import org.starmatch.src.model.StarSign;
 import org.starmatch.src.model.Trait;
@@ -39,7 +40,7 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
                 }
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error creating StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -57,7 +58,7 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
                 return null;
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error reading StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -78,7 +79,7 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
                 starSignTraitRepository.addTraitToStarSign(obj.getId(), trait.getId());  // Add new traits
             }
         } catch (SQLException e) {
-            throw new RuntimeException("Error updating StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -90,7 +91,7 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException("Error deleting StarSign", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
@@ -108,7 +109,7 @@ public class StarSignDBRepository extends DBRepository<StarSign> {
 
             return starSigns;
         } catch (SQLException e) {
-            throw new RuntimeException("Error fetching all StarSigns", e);
+            throw new DatabaseException(e.getMessage(), e);
         }
     }
 
