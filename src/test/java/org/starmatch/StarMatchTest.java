@@ -5,6 +5,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.starmatch.src.utils.InMemoryData.*;
 
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import static org.mockito.Mockito.*;
+
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -16,6 +21,7 @@ import org.starmatch.src.exceptions.BusinessLogicException;
 import org.starmatch.src.exceptions.EntityNotFoundException;
 import org.starmatch.src.model.*;
 import org.starmatch.src.repository.*;
+import org.starmatch.src.repository.DBRepo.UserDBRepository;
 
 public class StarMatchTest {
 
@@ -33,6 +39,7 @@ public class StarMatchTest {
         traitRepository = createInMemoryTraitRepository();
         quoteRepository = createInMemoryQuoteRepository();
     }
+
 
     @Test
     public void testCRUDOperations() {
@@ -195,3 +202,4 @@ public class StarMatchTest {
             assertEquals("Cluj", friends.getBirthPlace());
     }
 }
+
