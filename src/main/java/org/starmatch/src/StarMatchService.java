@@ -456,7 +456,7 @@ public class StarMatchService {
      * @throws NoSuchElementException if the specified friend is not found or not in the user's friend list
      */
     public Compatibility calculateCompatibility(User user, String friendEmail){
-        User friend=userRepository.getAll().stream().filter(user1 -> user1.getEmail().equals(friendEmail)).findFirst().orElseThrow(() -> new NoSuchElementException("User with that email does not exist"));
+        User friend=userRepository.getAll().stream().filter(user1 -> user1.getEmail().equals(friendEmail)).findFirst().orElseThrow(() -> new EntityNotFoundException("User with that email does not exist"));
         if(!user.getFriends().contains(friend) && !user.getRawFriendEmails().contains(friendEmail))
             throw new EntityNotFoundException("That User is not your friend");
 

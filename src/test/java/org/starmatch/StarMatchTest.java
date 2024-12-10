@@ -8,6 +8,12 @@ import static org.starmatch.src.utils.InMemoryData.*;
 import java.util.List;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
+
+import org.junit.jupiter.api.function.Executable;
+import org.starmatch.src.StarMatchService;
+import org.starmatch.src.exceptions.BusinessLogicException;
+import org.starmatch.src.exceptions.EntityNotFoundException;
 import org.starmatch.src.model.*;
 import org.starmatch.src.repository.*;
 
@@ -111,4 +117,81 @@ public class StarMatchTest {
         assertNull(deletedQuote);
     }
 
+    @Test
+    public void testComplexOperations() {
+        User user = new User(5, "Test User", LocalDate.of(1995, 12, 15), LocalTime.of(9,0), "Bucharest", "testuser@gmail.com", "test123");
+        userRepository.create(user);
+        User friend = new User(6,"Friend", LocalDate.of(2001,6,23),LocalTime.of(10,0), "Bucharest", "testfriend@gmail.com", "test123");
+        userRepository.create(friend);
+        StarMatchService service = new StarMatchService(userRepository,adminRepository,signRepository,quoteRepository,traitRepository);
+
+        // --Test Calculation NatalChart--
+        NatalChart chart = service.getNatalChart(user);
+        NatalChart chart1 = service.getNatalChart(friend);
+        assertEquals(3, chart.getPlanets().size());
+        assertEquals("Sagittarius",chart.getPlanets().getFirst().getSign().getStarName());
+        assertEquals("Cancer",chart1.getPlanets().getFirst().getSign().getStarName());
+
+        // --Test Personality Trait--
+        assertEquals(List.of("passionate","playful","energized"),service.getPersonalityTraits(user));
+        assertEquals(List.of("emotional","intuitive","nurturing"),service.getPersonalityTraits(friend));
+
+        // --Test Quote--
+        String quote = service.getPersonalizedQuote(user);
+        assertTrue(quote.equals("The only trip you will regret is the one you don’t take.") || quote.equals("Adventure is worthwhile in itself.") || quote.equals("Life begins at the end of your comfort zone.") || quote.equals("Free spirits don't ask for permission."));
+
+        // --Test Friend Add and Remove--
+        service.addFriend(user,friend.getEmail());
+        assertTrue(user.getRawFriendEmails().contains(friend.getEmail()));
+
+        BusinessLogicException exceptionAddYourself = assertThrows(BusinessLogicException.class, () -> {service.addFriend(user,user.getEmail());});
+        assertEquals("You cannot add yourself as your friend", exceptionAddYourself.getMessage());
+
+        EntityNotFoundException exceptionAddInvalidFriend = assertThrows(EntityNotFoundException.class, () -> {service.addFriend(user,"unemail@yahoo.com");});
+        assertEquals("User with that email does not exist", exceptionAddInvalidFriend.getMessage());
+
+        service.removeFriend(user,friend.getEmail());
+        assertFalse(user.getRawFriendEmails().contains(friend.getEmail()));
+
+        EntityNotFoundException exceptionRemoveInvalidFriend = assertThrows(EntityNotFoundException.class, () -> {service.removeFriend(user,"unemail@yahoo.com");});
+        assertEquals("User with that email does not exist", exceptionRemoveInvalidFriend.getMessage());
+
+        // --Test Compatibility Calculations--
+        service.addFriend(user,friend.getEmail());
+        Compatibility result = service.calculateCompatibility(user,friend.getEmail());
+        assertTrue(result.getCompatibilityScore()>=0 && result.getCompatibilityScore()<=100);
+
+        EntityNotFoundException exception1 = assertThrows(EntityNotFoundException.class, () -> service.calculateCompatibility(user,"unemail@gmail.com"));
+        assertEquals("User with that email does not exist", exception1.getMessage());
+
+        // --Test validation email--
+        assertTrue(service.validateEmail("test@gmail.com"));
+        assertFalse(service.validateEmail("test.com"));
+        assertFalse(service.validateEmail("test@com"));
+        assertFalse(service.validateEmail("testemail"));
+        assertFalse(service.validateEmail(""));
+
+        // --Test filter methods--
+        List<User> users1=List.of(user,friend);
+        assertEquals(List.of(friend),service.filterUsersByYear(users1,2001));
+
+        List<Quote> quotes = List.of(new Quote(1,Element.Air,"test"), new Quote(2,Element.Air,"test1"), new Quote(3,Element.Fire,"test2"));
+        assertEquals(2,service.filterQuotesByElement(quotes,Element.Air).size());
+
+        // --Test most popular element--
+        List<User> usersTestElement = userRepository.getAll();
+        Map<Element, Long> mostPopularElements = service.mostPopularElements(usersTestElement);
+        assertNotNull(mostPopularElements);
+        assertFalse(mostPopularElements.isEmpty());
+        assertTrue(mostPopularElements.containsKey(Element.Water));
+        assertTrue(mostPopularElements.containsKey(Element.Fire));
+
+        // --Test people near me--
+        User userNear = new User(7,"Near User", LocalDate.of(2001,6,23),LocalTime.of(10,0), "Cluj", "testnear@gmail.com", "test123");
+        userRepository.create(userNear);
+        List<User> friendsNear = service.getFriendsNearMe(userNear);
+        assertNotNull(friendsNear);
+        for (User friends : friendsNear)
+            assertEquals("Cluj", friends.getBirthPlace());
+    }
 }
