@@ -4,7 +4,7 @@ package org.starmatch.src.model;
  * Represents an Admin with a unique ID, name, email, and password.
  * Implements the {@link HasId} interface to provide an ID getter.
  */
-public class Admin implements HasId{
+public class Admin extends Person {
     private int id;
     private String name;
     private String password;
@@ -19,8 +19,7 @@ public class Admin implements HasId{
      * @param password the password for the admin's account
      */
     public Admin(int id, String name, String email, String password) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.email = email;
         this.password = password;
     }
