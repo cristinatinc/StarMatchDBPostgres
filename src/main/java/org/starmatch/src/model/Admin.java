@@ -2,7 +2,7 @@ package org.starmatch.src.model;
 
 /**
  * Represents an Admin with a unique ID, name, email, and password.
- * Implements the {@link HasId} interface to provide an ID getter.
+ * Extends the {@link Person} abstract class.
  */
 public class Admin extends Person {
     private int id;
