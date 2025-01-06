@@ -4,9 +4,9 @@
 
 ## Table of Contents 🌟
 
-1. [Application Description](Application%20Description)
-2. [Main Features](Main%20Features)
-3. [Technologies Used](Technologies%20Used)
+1. [Application Description]
+2. [Main Features]
+3. [Technologies Used]
 
 ## 1. Application Description 🌟
 #### ✨StarMatch✨ is an astrology-based application, designed to inspire self-discovery and build meaningful friendships.
