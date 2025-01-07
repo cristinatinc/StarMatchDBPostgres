@@ -4,9 +4,9 @@
 
 ## Table of Contents 🌟
 
-1. [Application Description](Application%20Description)
-2. [Main Features](Main%20Features)
-3. [Technologies Used](Technologies%20Used)
+1. [Application Description and UML Diagramm]
+2. [Main Features]
+3. [Technologies Used]
 
 ## 1. Application Description 🌟
 #### ✨StarMatch✨ is an astrology-based application, designed to inspire self-discovery and build meaningful friendships.
@@ -16,6 +16,9 @@ for friendships and offers personalized insights into users' personalities and
 relationships. By gathering information about the user's birthday, StarMatch generates a detailed natal chart, 
 highlighting sun, moon, and rising signs. Users can connect with others, explore their astrological 
 profiles, and enjoy tailored quotes, traits, and compatibility analyses for deeper connections and self-awareness.
+
+#### UML Diagramm
+![UML class](https://github.com/user-attachments/assets/7ef0a7cd-737e-418b-9831-86be813b4453)
    
 ## 2. Main Features 🌟
 ### ♈ User Profile Management : 
@@ -75,4 +78,5 @@ Built on a 4-layer architecture, StarMatch offers three storage opportunities th
 - **Build Tool:** Maven
 - **Database:** PostgreSQL
 - **File Storage:** CSV
+
 
