@@ -517,7 +517,7 @@ public class ConsoleApp {
         String traitID = scanner.nextLine();
         try{
             starMatchController.removeTrait(Integer.valueOf(traitID));}
-        catch (EntityNotFoundException e){
+        catch (EntityNotFoundException | NumberFormatException e){
             System.out.println(e.getMessage());
         }
     }

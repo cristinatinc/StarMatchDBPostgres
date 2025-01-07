@@ -3,4 +3,3 @@
 3,Briana Gheorghe,brianaagheorghe@yahoo.com,bribri,2004-01-03,22:12,Sibiu,
 4,sore marian,soremarian@gmail.com,sore1,1990-09-10,06:23,Victoria,
 5,Diana,diana@yahoo.com,12345,2000-03-22,10:26,Cluj,
-6,ioana,ioana@gmail.com,parola1,2004-06-25,10:36,Fagaras,

@@ -67,9 +67,13 @@ public class StarMatchService {
      * Removes a user by ID from the user repository.
      */
     public void removeUser(Integer userId) {
-        if(!userRepository.getAll().contains(userId)) {
+        boolean userExists = userRepository.getAll().stream()
+                .anyMatch(user -> user.getId().equals(userId));
+
+        if (!userExists) {
             throw new EntityNotFoundException("User not found");
         }
+
         userRepository.delete(userId);
     }
 
@@ -84,10 +88,14 @@ public class StarMatchService {
     /**
      * Removes an admin by ID from the admin repository.
      */
-    public void removeAdmin(Integer adminId){
-        if(!adminRepository.getAll().contains(adminId)) {
+    public void removeAdmin(Integer adminId) {
+        boolean adminExists = adminRepository.getAll().stream()
+                .anyMatch(admin -> admin.getId().equals(adminId));
+
+        if (!adminExists) {
             throw new EntityNotFoundException("Admin not found");
         }
+
         adminRepository.delete(adminId);
     }
 
@@ -126,11 +134,16 @@ public class StarMatchService {
      * Removes a quote by ID from the quote repository.
      */
     public void removeQuote(Integer quoteId) {
-        if(!quoteRepository.getAll().contains(quoteId)) {
+        boolean quoteExists = quoteRepository.getAll().stream()
+                .anyMatch(quote -> quote.getId().equals(quoteId));
+
+        if (!quoteExists) {
             throw new EntityNotFoundException("Quote not found");
         }
+
         quoteRepository.delete(quoteId);
     }
+
 
     /**
      * Updates a quote's text by its ID.
@@ -158,12 +171,17 @@ public class StarMatchService {
     /**
      * Removes a trait by ID from the trait repository.
      */
-    public void removeTrait(Integer traitId){
-        if(!traitRepository.getAll().contains(traitId)) {
+    public void removeTrait(Integer traitId) {
+        boolean traitExists = traitRepository.getAll().stream()
+                .anyMatch(trait -> trait.getId().equals(traitId));
+
+        if (!traitExists) {
             throw new EntityNotFoundException("Trait not found");
         }
+
         traitRepository.delete(traitId);
     }
+
 
     /**
      * Updates a trait's information.
@@ -207,7 +225,8 @@ public class StarMatchService {
     public List<User> getUsers() {
         List<User> users = userRepository.getAll();
         sortUsersByBirthdate(users);
-        return users;}
+        return users;
+    }
 
     /**
      * Retrieves a list of all quotes.
@@ -561,11 +580,15 @@ public class StarMatchService {
      * @param users the list of users to be sorted
      * @return a list of users sorted by their birth date, or an empty list if input is null or empty
      */
-    public List<User> sortUsersByBirthdate(List<User> users){
-        if(users == null || users.isEmpty())
+    public List<User> sortUsersByBirthdate(List<User> users) {
+        if (users == null || users.isEmpty()) {
             return Collections.emptyList();
-        users.sort(Comparator.comparing(User::getBirthDate));
-        return users;
+        }
+        // Create a mutable copy of the list
+        List<User> mutableUsers = new ArrayList<>(users);
+        // Sort the mutable list
+        mutableUsers.sort(Comparator.comparing(User::getBirthDate));
+        return mutableUsers;
     }
 
     /**

@@ -11,6 +11,5 @@
 11,Air,Identify with everything. Align with nothing.
 12,Air,Everything in the universe is within you. Ask all from yourself.
 13,Earth,Empty yourself and let the universe fill you.
-14,Earth,Fall seven times, stand up eight.
-15,Earth,I have standards I don’t plan on lowering for anybody, including myself.
-16,Earth,Be easily awed, not easily impressed.
+14,Earth,Fall seven times
+15,Earth,I have standards I don’t plan on lowering for anybody

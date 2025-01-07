@@ -150,7 +150,7 @@ public class UserDBRepository extends DBRepository<User> {
      */
     @Override
     public List<User> getAll() {
-        String sql = "SELECT * FROM \"User\"";
+        String sql = "SELECT * FROM \"User\" ORDER BY birthdate";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             ResultSet resultSet = statement.executeQuery();
@@ -188,31 +188,10 @@ public class UserDBRepository extends DBRepository<User> {
                 statement.addBatch();
             }
             statement.executeBatch();
-
-            // Now check for any unidirectional friendships and insert the reverse direction if needed
-            String reverseSql = "SELECT 1 FROM \"User_Friends\" WHERE userId = ? AND friendId = ?";
-            try (PreparedStatement reverseStatement = connection.prepareStatement(reverseSql)) {
-                for (User friend : user.getFriends()) {
-                    // Check if the reverse friendship already exists
-                    reverseStatement.setInt(1, friend.getId());
-                    reverseStatement.setInt(2, user.getId());
-
-                    ResultSet resultSet = reverseStatement.executeQuery();
-                    if (!resultSet.next()) {
-                        // If the reverse friendship does not exist, insert it
-                        try (PreparedStatement insertReverse = connection.prepareStatement(sql)) {
-                            insertReverse.setInt(1, friend.getId());
-                            insertReverse.setInt(2, user.getId());
-                            insertReverse.executeUpdate();
-                        }
-                    }
-                }
-            }
         } catch (SQLException e) {
             throw new DatabaseException(e.getMessage(), e);
         }
     }
-
     /**
      * Updates the friendships of a user in the database.
      * Removes old friendships and saves the new ones.
